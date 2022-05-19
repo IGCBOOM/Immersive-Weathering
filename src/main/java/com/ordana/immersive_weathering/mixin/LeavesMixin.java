@@ -24,7 +24,15 @@ public abstract class LeavesMixin extends Block implements Fertilizable {
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         if(ImmersiveWeathering.getConfig().leavesConfig.leafDecayPiles) {
-            if (!state.get(LeavesBlock.PERSISTENT) && state.get(LeavesBlock.DISTANCE) == 7) {
+
+            // Start as true to prevent unwanted blocks from growing if they do not contain property persistent.
+            Boolean persistent = true;
+            var prop = state.getOrEmpty(LeavesBlock.PERSISTENT);
+            if (!prop.isEmpty()) {
+                persistent = prop.get();
+            }
+
+            if (!persistent && state.get(LeavesBlock.DISTANCE) == 7) {
                 var leafPile = WeatheringHelper.getFallenLeafPile(state).orElse(null);
                 BlockState baseLeaf = leafPile.getDefaultState().with(LeafPileBlock.LAYERS, 0);
                 if (world.random.nextFloat() < 0.3f) {

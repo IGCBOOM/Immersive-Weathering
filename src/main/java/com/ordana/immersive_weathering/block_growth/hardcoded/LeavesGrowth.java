@@ -30,8 +30,16 @@ public class LeavesGrowth implements IBlockGrowth {
     public void tryGrowing(BlockPos pos, BlockState state, ServerWorld world, RegistryEntry<Biome> biome) {
         if(ImmersiveWeathering.getConfig().leavesConfig.leafPilesForm) {
             Random random = world.random;
+
+            // Start as true to prevent unwanted blocks from growing if they do not contain property persistent.
+            Boolean persistent = true;
+            var prop = state.getOrEmpty(LeavesBlock.PERSISTENT);
+            if (!prop.isEmpty()) {
+                persistent = prop.get();
+            }
+
             //Drastically reduced this chance to help lag
-            if (!state.get(LeavesBlock.PERSISTENT) && random.nextFloat() < 0.03f) {
+            if (!persistent && random.nextFloat() < 0.03f) {
 
                 var leafPile = WeatheringHelper.getFallenLeafPile(state).orElse(null);
                 if (leafPile != null && world.getBlockState(pos.down()).isIn(ModTags.LEAF_PILE_REPLACEABLE)) {

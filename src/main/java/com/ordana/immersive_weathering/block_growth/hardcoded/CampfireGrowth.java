@@ -33,7 +33,11 @@ public class CampfireGrowth implements IBlockGrowth {
             if (state.get(CampfireBlock.LIT)) {
                 Random random = world.random;
 
-                int smokeHeight = state.get(CampfireBlock.SIGNAL_FIRE) ? 23 : 8;
+                int smokeHeight = 8;
+                var prop = state.getOrEmpty(CampfireBlock.SIGNAL_FIRE);
+                if (!prop.isEmpty()) {
+                    smokeHeight = prop.get() ? 23 : 8;
+                }
 
                 BlockPos sootPos = pos;
                 for (int i = 0; i < smokeHeight; i++) {
